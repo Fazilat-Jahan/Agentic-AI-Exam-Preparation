@@ -1,8 +1,8 @@
 # 🤝 Handoff
 
-This repo shows how **handoff works** using the OpenAI Agents SDK.
+This shows how **handoff works** using the OpenAI Agents SDK.
 
-Just open **main.py** — every line already has **inline explanation** in a very easy way.  
+Just open **main.py** where every line already has **inline explanation** in a very easy way.  
 
 ---
 
