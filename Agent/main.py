@@ -59,4 +59,3 @@ result = Runner.run_sync(agent, "Write a joke about programmers.")  # Running th
 # run_sync: for synchronous execution, means the agent waits until the LLM generates the full response
 
 print(result.final_output) #printing the agents final response
-
