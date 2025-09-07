@@ -87,7 +87,6 @@ print(result.final_output) #printing the agents final response
 print("Last Agent", result.last_agent.name) #printing the last agent who actually answered
 
 
-
 #try these different inputs to see how handoff works
 
 # result1 = Runner.run_sync(checkin_agent, "I have extra luggage, what should I do?")
