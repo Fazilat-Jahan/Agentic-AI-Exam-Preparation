@@ -77,21 +77,27 @@ checkin_agent = Agent(
     handoffs=[baggage_agent, immigration_agent, customer_service_agent]
 )
 
-
-
-
 # Given task to agent
 result = Runner.run_sync(checkin_agent, "I have extra luggage, what should I do?")  # Running the agent with a task
 # run_sync: for synchronous execution, means the agent waits until the LLM generates the full response
 
-#result = Runner.run_sync(checkin_agent, 
-#                        """"I have extra luggage, what should I do?,
-#  My visa got expired, can I still board?,
-# Can I upgrade my seat to business class?""") 
-
-#try these different inputs to see how handoff works
 
 print(result.final_output) #printing the agents final response
 
 print("Last Agent", result.last_agent.name) #printing the last agent who actually answered
+
+
+
+#try these different inputs to see how handoff works
+
+# result1 = Runner.run_sync(checkin_agent, "I have extra luggage, what should I do?")
+# print(result1.final_output)
+# print("Last Agent:", result1.last_agent.name)
+
+# result2 = Runner.run_sync(checkin_agent, "My visa got expired, can I still board?")
+# print(result2.final_output)
+# print("Last Agent:", result2.last_agent.name)
+
+
+
 
