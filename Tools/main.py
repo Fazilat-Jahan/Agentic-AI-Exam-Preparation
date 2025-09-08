@@ -172,7 +172,7 @@ doctor_agent = Agent(
 result = Runner.run_sync(doctor_agent, "I have red itchy spots on my skin. What should I do?")
 print("Agent as Tool Answer: ", result.final_output)
 
-#Note: Handoffs and Agent as tool seams similar but they are totally different.
+#Note: Handoffs and Agent as tool seems similar but they are totally different.
 #In handoffs, the DermatologistAgent would take full control, and the DoctorAgent would step back completely.
 # In Agent as Tool: The DoctorAgent always stays in charge, calls the DermatologistAgent like a helper function, and then gives the final response back to the user.
 
