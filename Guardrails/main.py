@@ -99,3 +99,93 @@
 
 #---------------------------------------------------#
 
+
+
+
+from agents import Agent, Runner, AsyncOpenAI, OpenAIChatCompletionsModel, GuardrailFunctionOutput, InputGuardrailTripwireTriggered, RunContextWrapper, TResponseInputItem, input_guardrail
+#importing classes from agents module like,
+# Agent: to create AI agent
+# Runner: to run agent task 
+# AsyncOpenAI: to connect with external openai comaptible API
+# OpenAIChatCompletionsModel: to define which LLM model the agent will use
+
+from pydantic import BaseModel
+import os
+import asyncio
+
+import os # importing os to access environment variables
+from dotenv import load_dotenv
+
+load_dotenv()
+# load_dotenv()  # Load environment variables from a .env file
+
+
+
+MODEL_NAME = "gemini-2.0-flash" # which LLM model will agent use
+GEMINI_API_KEY= os.getenv("GEMINI_API_KEY")
+
+
+
+# external_client is the connection that allows us to talk with Gemini API
+external_client = AsyncOpenAI(
+        api_key = GEMINI_API_KEY,
+        base_url = "https://generativelanguage.googleapis.com/v1beta/openai/" #it is Gemini api endpoint bcx we are using Gemini LLM in OpenAI Agents framework
+    )
+
+model = OpenAIChatCompletionsModel(
+        model = MODEL_NAME,
+        openai_client=external_client, #connect external cient with OpenAI client
+    )
+
+ 
+class IrrelevantOutput(BaseModel):
+    is_irrelevant: bool
+    reasoning: str 
+
+guardrial_Agent = Agent(
+    name= "Guardrail Agent",
+    instructions= "Check if the user is asking irrelevant question instead of customer support related question.",
+    output_type=IrrelevantOutput,
+    model=model,
+    )
+
+@input_guardrail #decorator to apply input guardrail on agent
+async def irrelevant_guardrail(
+    ctx: RunContextWrapper[None], agent: Agent, input: str | list[TResponseInputItem]
+) -> GuardrailFunctionOutput:
+    result = await Runner.run(guardrial_Agent, input, context=ctx.context)
+
+    return GuardrailFunctionOutput(
+        output_info= result.final_output,
+        tripwire_triggered = result.final_output.is_irrelevant,
+    )
+
+agent = Agent(
+    name= "Customer Support Agent",
+    instructions= "You are a customer support agent. Answer customer queries politely and accurately.",
+    input_guardrails= [irrelevant_guardrail],
+    model=model,
+)
+
+async def main():
+    # #Case 1
+    # try:
+    #     result = await Runner.run(agent, "how i get customer refund?")
+    #     print(" Agent Reply:", result.final_output)
+    # except InputGuardrailTripwireTriggered:
+    #     print("irrelevant query detected, execution stopped.")
+
+    # the trip wire triigger will False bcx it is relevent query, agent give full response
+
+    #Case 2
+    try:
+        result = await Runner.run(agent, "solve 3+8")
+        print(" Agent Reply:", result.final_output)
+    except InputGuardrailTripwireTriggered:
+        print("irrelevant query detected, execution stopped.")
+
+        # the trip wire triigger will True bcx it is irrelevent query and print execptions
+
+
+if __name__ == "__main__":
+    asyncio.run(main())    
