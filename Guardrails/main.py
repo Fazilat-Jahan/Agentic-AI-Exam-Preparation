@@ -109,7 +109,7 @@ from agents import Agent, Runner, AsyncOpenAI, OpenAIChatCompletionsModel, Guard
 # AsyncOpenAI: to connect with external openai comaptible API
 # OpenAIChatCompletionsModel: to define which LLM model the agent will use
 
-from pydantic import BaseModel
+from pydantic import BaseModel #python library's Class which use to structured data (to define schemaa)
 import os
 import asyncio
 
@@ -137,11 +137,19 @@ model = OpenAIChatCompletionsModel(
         openai_client=external_client, #connect external cient with OpenAI client
     )
 
- 
+ #it make schema for Guardrail Agent Output
 class IrrelevantOutput(BaseModel):
-    is_irrelevant: bool
-    reasoning: str 
+    is_irrelevant: bool #check the query is relevent or not (always in boolean)
+    reasoning: str #short text reason why is irrelevent or not
+    # LLm give two things, boolean and reason
 
+    #when guardrail agent run so it give output in this formate like 
+    #{ "is_irrelevant": true,
+#  "reasoning": "This is a math question, not customer support."}
+
+
+    
+#It is a agent to make clasify the user input (If input is relevent so it will False, otherwise it is True)
 guardrial_Agent = Agent(
     name= "Guardrail Agent",
     instructions= "Check if the user is asking irrelevant question instead of customer support related question.",
@@ -150,13 +158,22 @@ guardrial_Agent = Agent(
     )
 
 @input_guardrail #decorator to apply input guardrail on agent
+#A guardrail function to check input like 
+#ctx: context info (conversation, meta data etc)
+#RunContextWrapper:A wrapper to hold execution context means if we want to run guradrail agent so have to pass context like info etc
+#TResponseInputItem: It is a type hint that define input can be string or structured list(list for multi turns inputs)
+#agent: a guardrail ,which agent is applied on
+#input: user's actual input
+
 async def irrelevant_guardrail(
     ctx: RunContextWrapper[None], agent: Agent, input: str | list[TResponseInputItem]
 ) -> GuardrailFunctionOutput:
     result = await Runner.run(guardrial_Agent, input, context=ctx.context)
 
+#GuardrailFunctionOutput: It is Return type function which tell output info(what guardrail analyse(reasoning or classification)) and tripwire trigger(Boolean rules break or not)
+
     return GuardrailFunctionOutput(
-        output_info= result.final_output,
+        output_info= result.final_output, 
         tripwire_triggered = result.final_output.is_irrelevant,
     )
 
@@ -167,6 +184,9 @@ agent = Agent(
     model=model,
 )
 
+#A function to run query
+#if guardrail pass, agent will reply and print(means relevent query pass)
+#if guardrail triggered, execptions raise and except block will run(means irrelevnt query block)
 async def main():
     # #Case 1
     # try:
@@ -181,7 +201,7 @@ async def main():
     try:
         result = await Runner.run(agent, "solve 3+8")
         print(" Agent Reply:", result.final_output)
-    except InputGuardrailTripwireTriggered:
+    except InputGuardrailTripwireTriggered: #it is a exception class,
         print("irrelevant query detected, execution stopped.")
 
         # the trip wire triigger will True bcx it is irrelevent query and print execptions
