@@ -1,25 +1,25 @@
 # Context: means give extra information to your agent so that tools and hooks take extra data and llm /agent runs do consistency, and in every run attach specific data.
 
-#There are two types of context
+#There are two classes of context
 
-# Local context: it is just for code not sent to LLM like 
-# name, id, dependencies, helper function, it will run through RunContextWrapper to the tools
+# Local context: explanation in LocalContext.py
 
-# LLM Context: it is which show to the LLM when generates response, it is just in conversation history. it will add in 
-#agent instructions, in input message, in retrivel/web search, when tool exposes
+# LLM Context: it is which show to the LLM when generates response, it is just in conversation history. it will add in,
+#agent instructions, input message, retrivel/web search, when tool exposes
 
-# Suppose you have coustomer support bot
-# the user id, plan text and logger object for backend work it all use in local context
-# the username is Jahan and she is on premium plan use for generate respose from LLM
+#Suppose you create customer agent which remember user name and id or whole conversation, so you will use LLm Context so that response will be personalized e.g:
+# Hey Fazilat! last time you asked about your subscription plan so .....
 
 
-from agents import Agent, Runner, AsyncOpenAI, OpenAIChatCompletionsModel, function_tool, RunContextWrapper
+
+
+from agents import Agent, Runner, AsyncOpenAI, OpenAIChatCompletionsModel, RunContextWrapper
 #importing classes from agents module like,
 # Agent: to create AI agent
 # Runner: to run agent task 
 # AsyncOpenAI: to connect with external openai comaptible API
 # OpenAIChatCompletionsModel: to define which LLM model the agent will use
-# function_tool: to convert a normal Python function into a tool that agents can call
+# RunContextWrapper: To carry context object
 
 from dataclasses import dataclass
 import asyncio
@@ -47,22 +47,20 @@ model = OpenAIChatCompletionsModel(
         openai_client=external_client, #connect external cient with OpenAI client
     )
 
-# making context object: which is just for python backend not for sending to LLM
+# making context object: which will be shown to LLM as apart of instructions (LLM Context)
 @dataclass
 class UserInfo:
     name: str
     id: int
 
-# a tool which use context
-@function_tool
-def fetch_username(
-    #in this tool use wrapper which always pass Run Context Wrapper which have context
-    wrapper: RunContextWrapper[UserInfo]) -> str:
-    """Fetch the name of the user"""
-    #through wrapper.context we access UserInfo object
 
-    return f"The user {wrapper.context.name}'s id is {wrapper.context.id}"
+#Function to dynamically create personalized LLM instructtions 
 
+def dynamic_instruction(run_context:RunContextWrapper[UserInfo], agent:Agent) -> str:
+    user_info: UserInfo = run_context.context
+
+    #llm see this return instructions and personalized answer acordinglly
+    return f"You are assisting {user_info.name}. Always personalized answers for user {user_info.name} ({user_info.id})"
 
 #create context object
 async def main():
@@ -70,11 +68,11 @@ async def main():
 
     agent = Agent[UserInfo](
         name= "User Information",
-        tools=[fetch_username],
-        model=model
-    )
+        instructions=dynamic_instruction,
+        model=model,
+        )
 
-    result = await Runner.run(starting_agent=agent, input="What is the name of user name", context= user_info) #this is local context
+    result = await Runner.run(starting_agent=agent, input="recommend a book in Historical Fiction", context= user_info) 
 
     print(result.final_output)
 
