@@ -2,13 +2,13 @@
 
 #Types of Streaming:
 
-#Raw Response Events: It genereate token by toke response means woord to word answer just like Chatgpt typing
+#Raw Response Events: It genereate token by token response means word by word answer just like Chatgpt typing effect
 
-#Run Items Events and Agents Events: It is a higher level updates means it only show step by step progress like when a tool call it shows response, when a tool give output it show response, when handoff run it shows response and so on.
+#Run Items Events and Agents Events: It is a higher level updates means it only show step by step progress like a tool call, tool give output, when handoff run and so on.
 
 # Use Case: 
-# If you want the simple typing effect means word by word answer use Raw Response Events but,
-# If you want to see the step by step agent updating so use Run Items Events and Agents Events
+# If you want the typing effect means word by word answer use Raw Response Events but,
+# If you want to see the step by step progress so use Run Items Events and Agents Events
 
 from agents import Agent, Runner, AsyncOpenAI, OpenAIChatCompletionsModel, function_tool, ItemHelpers
 #importing classes from agents module like,
@@ -46,34 +46,38 @@ model = OpenAIChatCompletionsModel(
         openai_client=external_client, #connect external cient with OpenAI client
     )
 
-#Raw Response Events:
+# Raw Response Events:
 
-# async def main():
-#     agent = Agent(
-#         name="Poetry Agent",
-#         instructions="You are helpful assistant",
-#         model=model
-#     )
-#     result = Runner.run_streamed(agent, "please give five different poetry of Allama Iqbal in Roman Urdu") #run_streamed will give output in streaming mode
+async def main():
+     agent = Agent(
+         name="Poetry Agent",
+         instructions="You are helpful assistant",
+         model=model
+     )
+     result = Runner.run_streamed(agent, "please give five different poetry of Allama Iqbal in Roman Urdu") #run_streamed will give output in streaming mode
 
-#     #events: each update from the agent(token,tool call, message)
-#     async for event in result.stream_events():#result.stream_events:give events one by one
-#                             #raw_response_event: LLM send small chunk texts
-#         if event.type == "raw_response_event" and isinstance(event.data, ResponseTextDeltaEvent): #ResponseTextDeltaEvent: represnt one small text piece(token) from LLM
-#             print(event.data.delta, end= "", flush=True) #.delta: newly generated texts
+     #events: each update from the agent(token,tool call, message)
+     async for event in result.stream_events(): #result.stream_events:give events one by one
 
-#     # whole logic: 
-#     # Loop listens for streaming events
-#     # if response comes in chunks 
-#     # it prints each chunk immediately.
-#     # this repeat the same process untill full response complete, 
-#     # so that it look like the answer is being generated word by word    
+                            #raw_response_event: LLM send small chunk texts
+        if event.type == "raw_response_event" and isinstance(event.data, ResponseTextDeltaEvent): #ResponseTextDeltaEvent: represnt one small text piece(token) from LLM
 
-# if __name__ == "__main__":
-#     asyncio.run(main())
+            print(event.data.delta, end= "", flush=True) #.delta: newly generated texts
+
+     # whole logic: 
+     # Loop listens for streaming events
+     # if response comes in chunks 
+     # it prints each chunk immediately.
+     # this repeat the same process untill full response complete, 
+     # so that it look like the answer is being generated word by word    
+
+if __name__ == "__main__":
+    asyncio.run(main())
+
+#-------------------------------------------------------------------------------------#
 
 
-#Run Items Events and Agents events
+# Run Items Events and Agents events
 
 @function_tool
 def how_many_poetry()-> int:
