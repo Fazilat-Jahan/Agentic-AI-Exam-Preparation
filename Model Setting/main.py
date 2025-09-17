@@ -4,8 +4,7 @@
 # Temperature : How much Agent creative and focused
 # Tool Choice: Can agent use extra tools(auto, required,none)
 # Max Token: Response Length limit
-#
-# Resolve Method
+
 
 from agents import Agent, Runner, AsyncOpenAI, OpenAIChatCompletionsModel, RunHooks, RunContextWrapper, AgentHooks, function_tool, ModelSettings
 
