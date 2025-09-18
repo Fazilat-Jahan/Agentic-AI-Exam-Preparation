@@ -6,7 +6,8 @@ This README explains three important Markdown features with examples and why the
 
 Syntax:
 ```
-[![Mini Robot](https://via.placeholder.com/150 "This is a cute mini robot")](https://example.com)```
+[![Mini Robot](https://via.placeholder.com/150 "This is a cute mini robot")](https://example.com)
+```
 
 
 Explanation:
