@@ -79,9 +79,9 @@ Example:
 ```
 -Apple
 
-*Banana
+-Banana
 
-+Mango
+-Mango
 ```
 
 👉 Why use it?
