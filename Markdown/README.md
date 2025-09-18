@@ -46,12 +46,13 @@ Numbers are written manually, but Markdown auto-fixes them.
 Even if you write 1. for all items, Markdown will show them as 1, 2, 3….
 
 Example:
+```
+1.Wake up
 
-Wake up
+2. Study Markdown
 
-Study Markdown
-
-Practice MCQs
+3. Practice 
+```
 
 👉 Why use it?
 
@@ -75,12 +76,13 @@ Use -, *, or + to create bullet points.
 Best for unordered information (no sequence needed).
 
 Example:
+```
+- Apple
 
-Apple
+* Banana
 
-Banana
-
-Mango
++ Mango
+```
 
 👉 Why use it?
 
