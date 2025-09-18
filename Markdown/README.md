@@ -63,10 +63,11 @@ Useful in tutorials, instructions, or processes.
 🔘 3. Bulleted Lists
 
 Syntax:
-
+```
 - Item A  
 - Item B  
-- Item C  
+- Item C
+```
 
 
 Explanation:
