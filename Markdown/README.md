@@ -76,11 +76,9 @@ Use -, *, or + to create bullet points.
 Best for unordered information (no sequence needed).
 
 Example:
-```
-+ Apple
-+ Banana
-+ Mango
-```
+- Apple
+- Banana
+- Mango
 
 👉 Why use it?
 
