@@ -5,8 +5,8 @@ This README explains three important Markdown features with examples and why the
 🖼️ 1. Clickable Images with Tooltip
 
 Syntax:
-
-[![Mini Robot](https://via.placeholder.com/150 "This is a cute mini robot")](https://example.com)
+```
+[![Mini Robot](https://via.placeholder.com/150 "This is a cute mini robot")](https://example.com)```
 
 
 Explanation:
@@ -19,6 +19,7 @@ Alt text → shown if image doesn’t load.
 
 Example:
 
+[![Mini Robot](https://via.placeholder.com/150 "This is a cute mini robot")](https://example.com)
 
 👉 Why use it?
 
