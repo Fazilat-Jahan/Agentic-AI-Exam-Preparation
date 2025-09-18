@@ -47,7 +47,7 @@ Even if you write 1. for all items, Markdown will show them as 1, 2, 3….
 
 Example:
 ```
-1.Wake up
+1. Wake up
 
 2. Study Markdown
 
@@ -77,11 +77,11 @@ Best for unordered information (no sequence needed).
 
 Example:
 ```
-- Apple
+-Apple
 
-* Banana
+*Banana
 
-+ Mango
++Mango
 ```
 
 👉 Why use it?
