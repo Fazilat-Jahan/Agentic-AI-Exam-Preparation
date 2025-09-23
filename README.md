@@ -1,2 +1,2 @@
-# Agentic-AI-Exam-Preparation
-Structured OpenAI Agents SDK exam prep with practical code examples and inline explanations.
+# Agentic-AI-with-OpenAI-Agents-SDK
+Structured OpenAI Agents SDK guide with daily topic updates, practical code examples, and inline explanations.
